@@ -1,122 +1,96 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+import { Navbar } from './components/Navbar';
+import { ListaTorneos } from './components/ListaTorneos';
+import { FormInscripcion } from './components/FormInscripcion';
+import { GestionEquipos } from './components/GestionEquipos';
+import { PerfilJugador } from './components/PerfilJugador';
+import { INITIAL_TORNEOS, JUGADORES_SANCIONADOS } from './data/mockData';
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  // 1. Estados Globales
+  const [torneos, setTorneos] = useState(INITIAL_TORNEOS);
+  const [vistaActual, setVistaActual] = useState('torneos');
+  const [usuarioActual, setUsuarioActual] = useState('ShadowStriker');
+  const [torneoSeleccionado, setTorneoSeleccionado] = useState(null);
+
+  // Verificar si el usuario seleccionado está en la lista de sancionados
+  const esSancionado = JUGADORES_SANCIONADOS.includes(usuarioActual);
+
+  // 2. Transición a la vista de inscripción
+  const handleSeleccionarTorneo = (torneo) => {
+    setTorneoSeleccionado(torneo);
+    setVistaActual('inscripcion');
+  };
+
+  // 3. Actualizar cupos cuando se completa una inscripción
+  const handleInscripcionExitosa = (idTorneo) => {
+    setTorneos(
+      torneos.map((t) =>
+        t.id === idTorneo ? { ...t, inscritos: t.inscritos + 1 } : t
+      )
+    );
+    // Volver al catálogo
+    setVistaActual('torneos');
+    setTorneoSeleccionado(null);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="d-flex flex-column min-vh-100 bg-dark text-light">
+      {/* Navegador principal */}
+      <Navbar 
+        usuarioActual={usuarioActual}
+        onCambiarUsuario={setUsuarioActual}
+        vistaActual={vistaActual}
+        onCambiarVista={setVistaActual}
+      />
 
-      <div className="ticks"></div>
+      {/* Renderizado condicional según la vista activa */}
+      <main className="flex-grow-1">
+        {vistaActual === 'torneos' && (
+          <ListaTorneos 
+            torneos={torneos} 
+            onSeleccionarTorneo={handleSeleccionarTorneo} 
+          />
+        )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        {vistaActual === 'inscripcion' && torneoSeleccionado && (
+          <div className="container my-4">
+            <button 
+              className="btn btn-outline-secondary mb-3"
+              onClick={() => setVistaActual('torneos')}
+            >
+              ← Volver a Torneos
+            </button>
+            <div className="row justify-content-center">
+              <div className="col-12 col-md-8 col-lg-6">
+                <FormInscripcion 
+                  torneo={torneoSeleccionado}
+                  onInscripcionExitosa={handleInscripcionExitosa}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        {vistaActual === 'equipos' && (
+          <GestionEquipos />
+        )}
+
+        {vistaActual === 'perfil' && (
+          <PerfilJugador 
+            apodoActual={usuarioActual}
+            onActualizarApodo={setUsuarioActual}
+            esSancionado={esSancionado}
+          />
+        )}
+      </main>
+
+      {/* Pie de página institucional */}
+      <footer className="bg-superficie border-top border-secondary text-center py-3 text-muted mt-auto">
+        <small>eSports Arena Manager — Duoc UC 2026</small>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
