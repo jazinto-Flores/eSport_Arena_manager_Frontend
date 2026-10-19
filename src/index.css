@@ -1,0 +1,43 @@
+/* Paleta 1: Arena Púrpura */
+:root {
+  --fondo-base: #0E0B16;       /* Fondo principal de la aplicación */
+  --superficie: #1C1430;       /* Fondo de tarjetas, modales y formularios */
+  --primario: #9146FF;         /* Botones principales y bordes destacados */
+  --acento: #00F5D4;           /* Títulos, highlights e indicadores de estado */
+  --texto: #F1ECFF;            /* Color de texto principal */
+  --error-color: #FF5C7A;      /* Alertas de error y cupos agotados */
+}
+
+/* Aplicación global del fondo y fuente */
+body {
+  background-color: var(--fondo-base) !important;
+  color: var(--texto) !important;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* Clases personalizadas reutilizables para integrar con Bootstrap */
+.bg-superficie {
+  background-color: var(--superficie) !important;
+}
+
+.text-acento {
+  color: var(--acento) !important;
+}
+
+.btn-primario {
+  background-color: var(--primario) !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primario:hover {
+  background-color: #7a22ff !important;
+  box-shadow: 0 0 10px rgba(145, 70, 255, 0.5);
+}
+
+.border-superficie {
+  border: 1px solid rgba(145, 70, 255, 0.2) !important;
+}
