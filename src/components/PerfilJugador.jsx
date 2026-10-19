@@ -1,4 +1,4 @@
-
+import { useState } from 'react';
 
 export function PerfilJugador({ apodoActual, onActualizarApodo, esSancionado }) {
   const [nuevoApodo, setNuevoApodo] = useState(apodoActual);

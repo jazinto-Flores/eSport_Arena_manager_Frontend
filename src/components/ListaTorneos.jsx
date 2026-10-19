@@ -1,5 +1,5 @@
 
-import  TorneoCard  from './TorneoCard';
+import  {TorneoCard}  from './TorneoCard';
 
 export function ListaTorneos({ torneos, onSeleccionarTorneo }) {
   return (

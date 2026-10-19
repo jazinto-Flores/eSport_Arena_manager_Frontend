@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 // Si exportaste con "export default":
-import TorneoCard from './components/TorneoCard.jsx';
-import FormInscripcion from './components/FormInscripcion.jsx';
-import PerfilJugador from './components/PerfilJugador.jsx';
+import {TorneoCard} from './components/TorneoCard.jsx';
+import {FormInscripcion} from './components/FormInscripcion.jsx';
+import {PerfilJugador} from './components/PerfilJugador.jsx';
 
 describe('Suite de Pruebas Unitarias - eSports Arena Manager', () => {
 
@@ -42,7 +42,7 @@ describe('Suite de Pruebas Unitarias - eSports Arena Manager', () => {
   it('3. Debe deshabilitar el botón de inscripción si el torneo está lleno', () => {
     render(<TorneoCard torneo={torneoLleno} onSeleccionar={() => {}} />);
     const boton = screen.getByRole('button', { name: /Inscripciones Cerradas/i });
-    expect(boton.disabled).toBeTrue();
+    expect(boton.disabled).toBeTruthy();
   });
 
   it('4. Debe mostrar el distintivo "CUPOS AGOTADOS" cuando no hay cupos', () => {
@@ -124,7 +124,7 @@ describe('Suite de Pruebas Unitarias - eSports Arena Manager', () => {
     const boton = screen.getByRole('button', { name: /Inscribir Equipo/i });
     fireEvent.click(boton);
 
-    expect(seleccionado).toBeTrue();
+    expect(seleccionado).toBeTruthy();
   });
 
   it('10. Debe procesar con éxito la inscripción al completar los datos del equipo', () => {
@@ -147,7 +147,7 @@ describe('Suite de Pruebas Unitarias - eSports Arena Manager', () => {
     const botonSubmit = screen.getByText('Confirmar Inscripción');
     fireEvent.click(botonSubmit);
 
-    expect(inscripcionCompletada).toBeTrue();
+    expect(inscripcionCompletada).toBeTruthy();
   });
 
 });
