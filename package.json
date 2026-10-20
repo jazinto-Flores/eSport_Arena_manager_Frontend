@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "karma start karma.conf.cjs --single-run",
+    "test:vitest": "vitest run"
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
@@ -20,6 +21,7 @@
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.6.0",
     "cross-env": "^10.1.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",

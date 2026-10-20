@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { ListaTorneos } from './components/ListaTorneos';
 import { FormInscripcion } from './components/FormInscripcion';
@@ -8,7 +8,24 @@ import { INITIAL_TORNEOS, JUGADORES_SANCIONADOS } from './data/mockData';
 
 export function App() {
   // 1. Estados Globales
-  const [torneos, setTorneos] = useState(INITIAL_TORNEOS);
+    const [torneos, setTorneos] = useState(() => {
+        try {
+            const guardados = localStorage.getItem('arena_torneos');
+
+            return guardados
+                ? JSON.parse(guardados)
+                : INITIAL_TORNEOS;
+        } catch {
+            return INITIAL_TORNEOS;
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem(
+            'arena_torneos',
+            JSON.stringify(torneos)
+        );
+    }, [torneos]);
   const [vistaActual, setVistaActual] = useState('torneos');
   const [usuarioActual, setUsuarioActual] = useState('ShadowStriker');
   const [torneoSeleccionado, setTorneoSeleccionado] = useState(null);
@@ -24,11 +41,13 @@ export function App() {
 
   // 3. Actualizar cupos cuando se completa una inscripción
   const handleInscripcionExitosa = (idTorneo) => {
-    setTorneos(
-      torneos.map((t) =>
-        t.id === idTorneo ? { ...t, inscritos: t.inscritos + 1 } : t
-      )
-    );
+      setTorneos((anteriores) =>
+          anteriores.map((torneo) =>
+              torneo.id === idTorneo
+                  ? { ...torneo, inscritos: torneo.inscritos + 1 }
+                  : torneo
+          )
+      );
     // Volver al catálogo
     setVistaActual('torneos');
     setTorneoSeleccionado(null);

@@ -14,6 +14,7 @@ describe('Suite de Pruebas Unitarias - eSports Arena Manager', () => {
     juego: 'Valorant',
     cuposMaximos: 8,
     inscritos: 3,
+    integrantesMinimos: 5,
     cierreInscripcion: '2026-11-01'
   };
 
