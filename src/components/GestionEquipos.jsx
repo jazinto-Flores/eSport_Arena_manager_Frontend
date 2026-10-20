@@ -1,4 +1,9 @@
-
+import {
+  leerEquipos,
+  crearEquipo,
+  actualizarEquipo,
+  eliminarEquipo
+} from '../data/equiposStorage';
 import  {useState}  from 'react';
 
 export function GestionEquipos() {
@@ -8,6 +13,10 @@ export function GestionEquipos() {
   const [nuevoIntegrante, setNuevoIntegrante] = useState('');
   const [rolIntegrante, setRolIntegrante] = useState('Titular');
   const [error, setError] = useState('');
+  const [equiposGuardados, setEquiposGuardados] =
+      useState(leerEquipos);
+  const [idEditando, setIdEditando] = useState(null);
+  const [mensajeExito, setMensajeExito] = useState('');
 
   // Agregar un integrante a la lista local
   const handleAgregarIntegrante = (e) => {
@@ -29,6 +38,58 @@ export function GestionEquipos() {
   // Eliminar integrante
   const handleEliminarIntegrante = (apodo) => {
     setIntegrantes(integrantes.filter((i) => i.apodo !== apodo));
+  };
+
+
+  const handleGuardarEquipo = () => {
+    if (!nombreEquipo.trim() || integrantes.length === 0) {
+      setError('Debes indicar un nombre y agregar integrantes.');
+      setMensajeExito('');
+      return;
+    }
+
+    const datos = {
+      nombre: nombreEquipo.trim(),
+      juego,
+      integrantes
+    };
+
+    if (idEditando) {
+      actualizarEquipo(idEditando, datos);
+      setMensajeExito('Escuadra actualizada correctamente.');
+    } else {
+      crearEquipo(datos);
+      setMensajeExito('Escuadra creada correctamente.');
+    }
+
+    setEquiposGuardados(leerEquipos());
+
+    setNombreEquipo('');
+    setIntegrantes([]);
+    setIdEditando(null);
+    setError('');
+  };
+
+  const handleEditarEquipo = (equipo) => {
+    setIdEditando(equipo.id);
+    setNombreEquipo(equipo.nombre);
+    setJuego(equipo.juego);
+    setIntegrantes([...equipo.integrantes]);
+    setError('');
+    setMensajeExito('');
+  };
+
+  const handleEliminarEquipo = (id) => {
+    eliminarEquipo(id);
+    setEquiposGuardados(leerEquipos());
+
+    if (idEditando === id) {
+      setIdEditando(null);
+      setNombreEquipo('');
+      setIntegrantes([]);
+    }
+
+    setMensajeExito('Escuadra eliminada correctamente.');
   };
 
   return (
@@ -122,14 +183,58 @@ export function GestionEquipos() {
               ))}
             </ul>
 
-            <button 
-              className="btn btn-success w-100 py-2 fw-bold"
-              disabled={!nombreEquipo || integrantes.length === 0}
-              onClick={() => alert(`Escuadra ${nombreEquipo} registrada exitosamente.`)}
+            <button
+                className="btn btn-success w-100 py-2 fw-bold"
+                disabled={!nombreEquipo.trim() || integrantes.length === 0}
+                onClick={handleGuardarEquipo}
             >
-              Guardar Escuadra
+              {idEditando ? 'Actualizar Escuadra' : 'Guardar Escuadra'}
             </button>
           </div>
+
+          {mensajeExito && (
+              <div className="alert alert-success mt-3" role="status">
+                {mensajeExito}
+              </div>
+          )}
+
+          <section className="mt-4">
+            <h4 className="text-acento mb-3">
+              Escuadras registradas
+            </h4>
+
+            {equiposGuardados.length === 0 && (
+                <p>Aún no hay escuadras registradas.</p>
+            )}
+
+            {equiposGuardados.map((equipo) => (
+                <div
+                    key={equipo.id}
+                    className="card bg-superficie text-light border-secondary p-3 mb-3"
+                >
+                  <h5>{equipo.nombre}</h5>
+                  <p className="mb-2">
+                    {equipo.juego} — {equipo.integrantes.length} integrantes
+                  </p>
+
+                  <div className="d-flex gap-2">
+                    <button
+                        className="btn btn-outline-info btn-sm"
+                        onClick={() => handleEditarEquipo(equipo)}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                        className="btn btn-outline-danger btn-sm"
+                        onClick={() => handleEliminarEquipo(equipo.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+            ))}
+          </section>
         </div>
       </div>
     </div>
