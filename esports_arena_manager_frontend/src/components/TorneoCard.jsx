@@ -2,6 +2,7 @@
 export function TorneoCard({ torneo, onSeleccionar }) {
   const cuposDisponibles = torneo.cuposMaximos - torneo.inscritos;
   const estaLleno = cuposDisponibles <= 0;
+  const cerrado = torneo.estado?.toUpperCase() !== 'ABIERTO';
 
   return (
     /* h-100 asegura que todas las tarjetas tengan la misma altura en la fila */
@@ -12,8 +13,8 @@ export function TorneoCard({ torneo, onSeleccionar }) {
             <span className="badge bg-dark text-acento border border-info">
               {torneo.juego}
             </span>
-            <span className={`badge ${estaLleno ? 'bg-danger' : 'bg-success'}`}>
-              {estaLleno ? 'CUPOS AGOTADOS' : `${cuposDisponibles} CUPOS`}
+            <span className={`badge ${(estaLleno || cerrado) ? 'bg-danger' : 'bg-success'}`}>
+              {estaLleno ? 'CUPOS AGOTADOS' : cerrado ? 'CERRADO' : `${cuposDisponibles} CUPOS`}
             </span>
           </div>
 
@@ -27,9 +28,9 @@ export function TorneoCard({ torneo, onSeleccionar }) {
           <button 
             className="btn btn-primario w-100 py-2"
             onClick={() => onSeleccionar(torneo)}
-            disabled={estaLleno}
+            disabled={estaLleno || cerrado}
           >
-            {estaLleno ? 'Inscripciones Cerradas' : 'Inscribir Equipo'}
+            {estaLleno || cerrado ? 'Inscripciones Cerradas' : 'Inscribir Equipo'}
           </button>
         </div>
       </div>
