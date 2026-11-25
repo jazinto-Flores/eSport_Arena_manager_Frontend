@@ -40,5 +40,5 @@ public class SecurityConfig {
     .anyRequest().authenticated())
   .oauth2ResourceServer(o->o.jwt(j->j.jwtAuthenticationConverter(converter))).build();
  }
- @Bean CorsConfigurationSource cors(@Value("${app.cors.origin}") String origin){var cfg=new CorsConfiguration(); cfg.setAllowedOrigins(Arrays.stream(origin.split(",")).map(String::trim).toList());cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));cfg.setAllowCredentials(false);var source=new UrlBasedCorsConfigurationSource();source.registerCorsConfiguration("/**",cfg);return source;}
+ @Bean UrlBasedCorsConfigurationSource corsConfigurationSource(@Value("${app.cors.origin}") String origin){var cfg=new CorsConfiguration(); cfg.setAllowedOrigins(Arrays.stream(origin.split(",")).map(String::trim).toList());cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));cfg.setAllowCredentials(false);var source=new UrlBasedCorsConfigurationSource();source.registerCorsConfiguration("/**",cfg);return source;}
 }
